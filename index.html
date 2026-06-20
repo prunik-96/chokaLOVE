@@ -1,53 +1,54 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pink Signal</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Vibe Button</title>
+
+<style>
+body{
+    font-family: sans-serif;
+    background: #fff0f6;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.card{
+    width:300px;
+    padding:20px;
+    border-radius:20px;
+    background:white;
+    box-shadow:0 0 20px pink;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    margin-top:10px;
+    border:none;
+    border-radius:12px;
+    background:#ff4da6;
+    color:white;
+    font-size:16px;
+}
+</style>
 </head>
 <body>
 
-<div class="container">
+<div class="card">
+    <h2>💗 Vibe App</h2>
 
-    <h1>💗 Pink Signal</h1>
+    <input id="myId" placeholder="my id">
+    <input id="target" placeholder="target id">
 
-    <select id="role">
-        <option value="client">Клиент</option>
-        <option value="sender">Отправитель</option>
-    </select>
+    <button onclick="connect()">connect</button>
+    <button onclick="vibe()">💗 VIBE</button>
 
-    <input
-        type="text"
-        id="myId"
-        placeholder="Введите свой ID"
-    >
-
-    <button id="connectBtn">
-        Подключиться
-    </button>
-
-    <div id="senderPanel" class="hidden">
-
-        <input
-            type="text"
-            id="targetId"
-            placeholder="ID клиента"
-        >
-
-        <button id="sendBtn">
-            💗 Отправить вибрацию
-        </button>
-
-    </div>
-
-    <div id="status">
-        Не подключено
-    </div>
-
+    <p id="status"></p>
 </div>
 
-<script type="module" src="app.js"></script>
+<script src="app.js"></script>
 
 </body>
 </html>
