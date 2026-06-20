@@ -1,114 +1,50 @@
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+const socket = new WebSocket("wss://star-eng-assistant-proposals.trycloudflare.com");
 
-import {
-    getDatabase,
-    ref,
-    push,
-    onChildAdded
-}
-from "https://www.gstatic.com/firebasejs/12.1.0/firebase-database.js";
+let myId = "";
 
-const firebaseConfig = {
-
-    apiKey: "YOUR_API_KEY",
-
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-
-    databaseURL:
-    "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-
-    projectId: "YOUR_PROJECT",
-
-    storageBucket: "YOUR_PROJECT.appspot.com",
-
-    messagingSenderId: "123456789",
-
-    appId: "YOUR_APP_ID"
+socket.onopen = () => {
+    document.getElementById("status").innerText = "connected";
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
 
-const role = document.getElementById("role");
-const myIdInput = document.getElementById("myId");
-const connectBtn = document.getElementById("connectBtn");
-const senderPanel = document.getElementById("senderPanel");
-const targetId = document.getElementById("targetId");
-const sendBtn = document.getElementById("sendBtn");
-const status = document.getElementById("status");
+    if (data.type === "vibe") {
 
-let currentId = "";
+        // 💥 вибрация
+        if (navigator.vibrate) {
+            navigator.vibrate([200,100,200,100,500]);
+        }
 
-connectBtn.addEventListener("click", () => {
+        document.body.style.background = "#ffd6eb";
 
-    currentId = myIdInput.value.trim();
+        setTimeout(() => {
+            document.body.style.background = "#fff0f6";
+        }, 500);
 
-    if(!currentId){
-        alert("Введите ID");
-        return;
+        alert("💗 vibe from " + data.from);
     }
+};
 
-    status.textContent =
-    "Подключено как: " + currentId;
+function connect() {
 
-    if(role.value === "sender"){
-        senderPanel.classList.remove("hidden");
-    }else{
-        senderPanel.classList.add("hidden");
-    }
-});
+    myId = document.getElementById("myId").value;
 
-sendBtn.addEventListener("click", () => {
+    socket.send(JSON.stringify({
+        type: "register",
+        id: myId
+    }));
 
-    const target = targetId.value.trim();
+    document.getElementById("status").innerText = "logged in as " + myId;
+}
 
-    if(!target){
-        alert("Введите ID клиента");
-        return;
-    }
+function vibe() {
 
-    push(ref(db, "signals"), {
+    const target = document.getElementById("target").value;
 
-        target: target,
-
-        sender: currentId,
-
-        timestamp: Date.now()
-    });
-
-    status.textContent =
-    "Сигнал отправлен → " + target;
-});
-
-onChildAdded(ref(db, "signals"), snapshot => {
-
-    const data = snapshot.val();
-
-    if(!currentId)
-        return;
-
-    if(data.target !== currentId)
-        return;
-
-    document.body.classList.add("pulse");
-
-    if(navigator.vibrate){
-        navigator.vibrate([
-            300,
-            150,
-            300,
-            150,
-            600
-        ]);
-    }
-
-    setTimeout(() => {
-        document.body.classList.remove("pulse");
-    }, 2000);
-
-    alert(
-        "💗 Получен сигнал от: " +
-        (data.sender || "неизвестно")
-    );
-});
+    socket.send(JSON.stringify({
+        type: "vibe",
+        from: myId,
+        to: target
+    }));
+}
