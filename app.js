@@ -1,4 +1,4 @@
-const socket = new WebSocket("wss://mark-dense-enquiry-proxy.trycloudflare.com");
+const socket = new WebSocket("wss://appears-rebate-huge-uniform.trycloudflare.com");
 
 let myId = "";
 
